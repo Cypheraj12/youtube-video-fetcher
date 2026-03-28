@@ -1,0 +1,2 @@
+# youtube video fetcher
+This project is a scalable backend service that continuously fetches the latest YouTube videos for a given search query using the YouTube Data API (v3). The server runs a background job at regular intervals to store video details (title, description, publish time, thumbnails, etc.) in a MongoDB database.  It exposes a GET API that returns videos in a paginated format, sorted by newest first (reverse chronological order).
