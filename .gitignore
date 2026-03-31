@@ -1,0 +1,33 @@
+# 🔹 Virtual Environment
+venv/
+env/
+ENV/
+
+# 🔹 Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 VS Code settings
+.vscode/
+
+# 🔹 PyCharm / IntelliJ
+.idea/
+
+# 🔹 OS files
+.DS_Store
+Thumbs.db
+
+# 🔹 Environment variables
+.env
+
+# 🔹 Logs & temp files
+*.log
+*.sqlite3
+
+# 🔹 Build / dist
+build/
+dist/
+*.egg-info/
+
