@@ -8,7 +8,7 @@ active_queries = set()
 
 
 @router.get("/videos")
-def get_videos(q: str, page: int = 1, limit: int = 10):
+def get_videos(q: str, page: int = 1, limit: int = 28):
 
     skip = (page - 1) * limit
 

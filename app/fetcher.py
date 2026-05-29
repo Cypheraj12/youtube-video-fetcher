@@ -6,12 +6,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ✅ Load and clean API keys
 keys = os.getenv("YOUTUBE_API_KEYS", "")
 API_KEYS = [k.strip() for k in keys.split(",") if k.strip()]
 
 if not API_KEYS:
-    raise Exception("No API keys found in .env")
+    raise Exception("No API keys found")
 
 current_key_index = 0
 
@@ -32,67 +31,102 @@ def fetch_from_youtube(query: str):
     url = "https://www.googleapis.com/youtube/v3/search"
 
     published_after = (
-        datetime.now(timezone.utc) - timedelta(days=1)
+        datetime.now(timezone.utc) - timedelta(days=30)
     ).isoformat(timespec="seconds").replace("+00:00", "Z")
 
-    for _ in range(len(API_KEYS)):
+    all_videos = []
 
-        api_key = get_api_key()
+    next_page_token = None
 
-        params = {
-            "part": "snippet",
-            "q": query,
-            "type": "video",
-            "order": "date",
-            "publishedAfter": published_after,
-            "maxResults": 10,
-            "key": api_key
-        }
+    # 🔥 Fetch 5 pages
+    for _ in range(5):
 
-        try:
-            response = requests.get(url, params=params, timeout=5)
-        except:
-            switch_key()
-            continue
+        success = False
 
-        if response.status_code == 200:
+        # 🔥 Try all API keys
+        for _ in range(len(API_KEYS)):
+
+            api_key = get_api_key()
+
+            params = {
+                "part": "snippet",
+                "q": query,
+                "type": "video",
+                "order": "date",
+                "publishedAfter": published_after,
+                "maxResults": 50,
+                "pageToken": next_page_token,
+                "key": api_key
+            }
+
             try:
-                data = response.json()
+                response = requests.get(
+                    url,
+                    params=params,
+                    timeout=10
+                )
+
             except:
                 switch_key()
                 continue
 
-            videos = []
+            # ✅ Success
+            if response.status_code == 200:
 
-            for item in data.get("items", []):
+                data = response.json()
 
-                if "videoId" not in item.get("id", {}):
-                    continue
+                items = data.get("items", [])
 
-                snippet = item.get("snippet", {})
+                for item in items:
 
-                videos.append({
-                    "video_id": str(item["id"]["videoId"]),
-                    "title": str(snippet.get("title", "")),
-                    "description": str(snippet.get("description", "")),
-                    "published_at": str(snippet.get("publishedAt", "")),
-                    "thumbnail": str(
-                        snippet.get("thumbnails", {})
-                        .get("default", {})
-                        .get("url", "")
-                    ),
-                    "query": str(query)
-                })
+                    if "videoId" not in item.get("id", {}):
+                        continue
 
-            if videos:
-                try:
-                    video_collection.insert_many(videos, ordered=False)
-                except:
-                    pass  # ignore duplicates
+                    snippet = item.get("snippet", {})
 
-            return videos
+                    video = {
+                        "video_id": str(item["id"]["videoId"]),
+                        "title": str(snippet.get("title", "")),
+                        "description": str(snippet.get("description", "")),
+                        "published_at": str(snippet.get("publishedAt", "")),
+                        "thumbnail": str(
+                            snippet.get("thumbnails", {})
+                            .get("high", {})
+                            .get("url", "")
+                        ),
+                        "query": query
+                    }
 
-        else:
-            switch_key()
+                    all_videos.append(video)
 
-    return []
+                # 🔥 Next page token
+                next_page_token = data.get("nextPageToken")
+
+                success = True
+
+                break
+
+            else:
+                switch_key()
+
+        # ❌ If all keys failed
+        if not success:
+            break
+
+        # ❌ No more pages
+        if not next_page_token:
+            break
+
+    # 🔥 Insert all videos
+    if all_videos:
+
+        try:
+            video_collection.insert_many(
+                all_videos,
+                ordered=False
+            )
+
+        except:
+            pass
+
+    return all_videos
