@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scalable YouTube Video Fetcher API & Explorer | Anant Joshi</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon">📺</span>
+        <span class="logo-text">YouTube <strong>Fetcher API</strong></span>
+      </div>
+      <div class="nav-links">
+        <span class="status-indicator"><span class="pulse-dot"></span> Live API Gateway</span>
+        <a href="https://github.com/Cypheraj12/youtube-video-fetcher" target="_blank" rel="noreferrer" class="btn-github">GitHub Repository</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero-section">
+      <div class="badge">FastAPI • YouTube Data API v3 • MongoDB Storage & Indexing</div>
+      <h1 class="hero-title">Continuous YouTube <span>Video Fetcher & Search</span></h1>
+      <p class="hero-subtitle">Asynchronous microservice querying YouTube Data API v3, archiving structured video records (title, description, timestamps, high-res thumbnails) into indexed MongoDB collections with paginated reverse-chronological retrieval.</p>
+    </section>
+
+    <!-- Search Controls -->
+    <section class="search-section">
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="queryInput" placeholder="Search keywords (e.g. Artificial Intelligence, Data Science, Football, Space Exploration)..." value="Machine Learning">
+        </div>
+        <button id="btnSearch" class="btn-search">Query Pipeline</button>
+      </div>
+
+      <div class="quick-topics">
+        <span>Trending Topics:</span>
+        <button class="topic-chip" data-topic="Artificial Intelligence">AI & Agents</button>
+        <button class="topic-chip active" data-topic="Machine Learning">Machine Learning</button>
+        <button class="topic-chip" data-topic="Data Science">Data Science</button>
+        <button class="topic-chip" data-topic="Space Exploration">Space & NASA</button>
+        <button class="topic-chip" data-topic="Next.js Full Stack">Web Development</button>
+      </div>
+    </section>
+
+    <!-- Results Status Bar -->
+    <section class="status-bar">
+      <div class="status-left">
+        <span id="resultsCount">Showing 12 cached records</span>
+        <span class="sort-badge">Sorted by: Published At (Newest First)</span>
+      </div>
+      <div class="status-right" id="apiStatusMessage">
+        <span class="source-tag">Source: Indexed Storage (MongoDB Cache)</span>
+      </div>
+    </section>
+
+    <!-- Video Grid -->
+    <section class="video-grid" id="videosContainer">
+      <!-- Injected via JavaScript -->
+    </section>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper">
+      <button id="btnPrev" class="btn-page" disabled>Previous</button>
+      <span id="pageIndicator" class="page-indicator">Page 1 of 5</span>
+      <button id="btnNext" class="btn-page">Next Page</button>
+    </div>
+
+    <!-- API Docs / Architecture Showcase -->
+    <section class="architecture-section">
+      <h2>🚀 Backend Architecture & Integration Specs</h2>
+      <div class="architecture-grid">
+        <div class="arch-card">
+          <div class="arch-icon">⚡</div>
+          <h3>Async Background Cron</h3>
+          <p>Runs scheduled periodic workers querying the YouTube Search endpoint, validating new uploads against existing video IDs to prevent duplicates.</p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-icon">🔑</div>
+          <h3>API Key Auto-Rotation</h3>
+          <p>Gracefully catches quota exhaustion errors (HTTP 403 / quotaExceeded) and transparently switches to fallback API credentials without service outage.</p>
+        </div>
+        <div class="arch-card">
+          <div class="arch-icon">🍃</div>
+          <h3>MongoDB Compound Index</h3>
+          <p>Stores records indexed on <code>published_at: -1</code> and text indexed on <code>title</code> and <code>description</code> for sub-millisecond retrieval latency.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <button class="btn-close" id="btnCloseModal">&times;</button>
+      <div class="video-player-wrapper">
+        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="modal-meta">
+        <h3 id="modalTitle">Video Title</h3>
+        <p id="modalDesc">Video Description</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Developed by <strong>Anant Joshi</strong> • AI/ML Engineer & Data Analyst</p>
+      <div class="footer-links">
+        <a href="https://github.com/Cypheraj12" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://linkedin.com/in/anant-joshi-52a6ab2a7/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://my-portfolio-psi-liart-71.vercel.app/" target="_blank" rel="noreferrer">Portfolio</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
